@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    {{template "styles" .}}
+</head>
+<body>
+    <div class="container">
+        <h1>{{.Title}}</h1>
+        
+        <!-- Tab 導航 -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('scan')">網路掃描</button>
+            <button class="tab-button" onclick="switchTab('records')">掃描記錄</button>
+            <button class="tab-button" onclick="switchTab('maintenance')">IP/MAC維護</button>
+            <button class="tab-button" onclick="switchTab('settings')">系統設定</button>
+        </div>
+        
+        {{template "content" .}}
+        {{template "modals" .}}
+    </div>
+    
+    {{template "scripts" .}}
+</body>
+</html>

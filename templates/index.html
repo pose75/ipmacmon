@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        h1 {
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        /* Tab 樣式 */
+        .tab-container {
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+        
+        .tab-list {
+            display: flex;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .tab-button.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background-color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button.danger {
+            background-color: #dc3545;
+        }
+        
+        button.danger:hover {
+            background-color: #c82333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+            white-space: pre-line;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        /* Radio Button 美化樣式 */
+        .radio-group {
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: white;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .radio-option:hover {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+
+        .radio-option.selected {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+        }
+
+        .radio-option input[type="radio"] {
+            margin: 0;
+            margin-right: 12px;
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .radio-content {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .radio-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .radio-description {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            width: 400px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        .modal-form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .modal-form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .modal-buttons .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 子分頁樣式 */
+        .settings-sub-tab {
+            display: none;
+        }
+
+        .settings-sub-tab.active {
+            display: block;
+        }
+
+        /* 狀態訊息關閉按鈕樣式 */
+        .status-close-btn {
+            background-color: transparent;
+            border: none;
+            color: inherit;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px;
+            float: right;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-close-btn:hover {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .status.success .status-close-btn {
+            color: #155724;
+        }
+
+        .status.error .status-close-btn {
+            color: #721c24;
+        }
+
+        .status {
+            position: relative;
+        }
+
+        /* 自動掃描間隔組的特殊樣式 */
+        #autoScanIntervalGroup {
+            margin-top: 10px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{.Title}}</h1>
+
+        <!-- Tab 導航 -->
+        <div class="tab-container">
+            <ul class="tab-list">
+                <li><button class="tab-button active" onclick="switchTab('scan')">網路掃描</button></li>
+                <li><button class="tab-button" onclick="switchTab('records')">掃描記錄</button></li>
+                <li><button class="tab-button" onclick="switchTab('maintenance')">IP/MAC維護</button></li>
+                <li><button class="tab-button" onclick="switchTab('settings')">系統設定</button></li>
+            </ul>
+        </div>
+
+        <!-- 網路掃描頁面 -->
+        <div id="scan-tab" class="tab-content active">
+            <div class="section">
+                <h2>網路掃描</h2>
+                <p>點擊下方按鈕執行網路掃描，系統將會掃描設定的網路範圍並記錄ARP資訊。</p>
+                <button onclick="performScan()">立即掃描</button>
+                <div id="scanStatus" class="status"></div>
+            </div>
+        </div>
+
+        <!-- 掃描記錄頁面 -->
+        <div id="records-tab" class="tab-content">
+            <div class="section">
+                <h2>ARP 掃描記錄</h2>
+                <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <label>選擇掃描批次:</label>
+                    <select id="batchSelect" onchange="loadArpEntriesFromBatch()" style="padding: 5px; min-width: 200px;">
+                        <option value="">最新掃描</option>
+                    </select>
+                    <button onclick="loadScanBatches()">重新載入</button>
+                    <button onclick="addAllToMaintenance()" style="background-color: #28a745;">更新全部到維護清單</button>
+                </div>
+                <div id="recordsStatus" class="status"></div>
+                <table id="arpTable">
+                    <thead>
+                        <tr>
+                            <th>IP位址</th>
+                            <th>設備名稱</th>
+                            <th>MAC位址</th>
+                            <th>掃描時間</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- IP/MAC維護頁面 -->
+        <div id="maintenance-tab" class="tab-content">
+            <div class="section">
+                <h2>IP/MAC 對應列表</h2>
+                <div style="margin-bottom: 10px;">
+                    <button onclick="loadIPMacMappings()">重新載入</button>
+                    <button onclick="clearAllIPMacMappings()" style="background-color: #dc3545; color: white; margin-left: 10px;">全部清除</button>
+                    <div style="float: right;">
+                        <label>排序方式: </label>
+                        <select id="sortOrder" onchange="loadIPMacMappings()" style="padding: 5px;">
+                            <option value="ip" selected>IP位址</option>
+                            <option value="updated_at">更新時間</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
+                <div id="maintenanceStatus" class="status"></div>
+                <table id="mappingTable">
+                    <thead>
+                        <tr>
+                            <th>IP位址</th>
+                            <th>MAC位址</th>
+                            <th>設備名稱</th>
+                            <th>說明</th>
+                            <th>更新時間</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 系統設定頁面 -->
+        <div id="settings-tab" class="tab-content">
+            <!-- 系統設定子分頁導航 -->
+            <div class="tab-container" style="margin-bottom: 20px;">
+                <ul class="tab-list">
+                    <li><button class="tab-button active" onclick="switchSettingsTab('network')">網路設定</button></li>
+                    <li><button class="tab-button" onclick="switchSettingsTab('auto-scan')">自動掃描設定</button></li>
+                    <li><button class="tab-button" onclick="switchSettingsTab('mail')">郵件設定</button></li>
+                </ul>
+            </div>
+
+            <!-- 網路設定子頁面 -->
+            <div id="network-settings" class="settings-sub-tab active">
+                <div class="section">
+                    <h2>網路設定</h2>
+                    <div class="form-group">
+                        <label>網路範圍 (CIDR):</label>
+                        <input type="text" id="networkCIDR" placeholder="例如: 10.2.10.0/24">
+                    </div>
+                    <div class="form-group">
+                        <label>掃描方式:</label>
+                        <div class="radio-group">
+                            <label class="radio-option" for="arpScanMethod">
+                                <input type="radio" name="scanMethod" value="arp-scan" id="arpScanMethod" checked>
+                                <div class="radio-content">
+                                    <div class="radio-title">ARP Scan 方式 (推薦)</div>
+                                    <div class="radio-description">使用ARP請求掃描網路設備</div>
+                                </div>
+                            </label>
+
+                            <label class="radio-option" for="pingMethod">
+                                <input type="radio" name="scanMethod" value="ping" id="pingMethod">
+                                <div class="radio-content">
+                                    <div class="radio-title">Ping 方式</div>
+                                    <div class="radio-description">使用ping命令掃描後檢查ARP表</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button onclick="updateNetworkConfig()">更新設定</button>
+                    <button onclick="loadNetworkConfig()">載入設定</button>
+                    <div id="configStatus" class="status"></div>
+                </div>
+            </div>
+
+            <!-- 自動掃描設定子頁面 -->
+            <div id="auto-scan-settings" class="settings-sub-tab">
+                <div class="section">
+                    <h2>自動掃描設定</h2>
+                    <div class="form-group">
+                        <label>掃描模式:</label>
+                        <div class="radio-group">
+                            <label class="radio-option" for="manualMode">
+                                <input type="radio" name="autoScanMode" value="manual" id="manualMode" checked>
+                                <div class="radio-content">
+                                    <div class="radio-title">手動掃描</div>
+                                    <div class="radio-description">只有點擊掃描按鈕時才執行掃描</div>
+                                </div>
+                            </label>
+
+                            <label class="radio-option" for="autoMode">
+                                <input type="radio" name="autoScanMode" value="auto" id="autoMode">
+                                <div class="radio-content">
+                                    <div class="radio-title">自動掃描</div>
+                                    <div class="radio-description">系統將定期自動執行網路掃描</div>
+                                    <div id="autoScanIntervalGroup" class="form-group" style="display: none; margin-top: 10px;">
+                                        <label>掃描間隔 (分鐘):</label>
+                                        <input type="number" id="autoScanInterval" value="6" min="1" max="1440" placeholder="預設: 6">
+                                        <small style="color: #666; display: block; margin-top: 5px; font-size: 12px;">
+                                            設定自動掃描的時間間隔，範圍: 1-1440 分鐘
+                                        </small>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button onclick="updateAutoScanConfig()">更新設定</button>
+                    <button onclick="loadAutoScanConfig()">載入設定</button>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+                        <h3>自動掃描控制</h3>
+                        <div id="autoScanControl">
+                            <button id="startAutoScanBtn" onclick="startAutoScan()" style="background-color: #28a745;">開始自動掃描</button>
+                            <button id="stopAutoScanBtn" onclick="stopAutoScan()" style="background-color: #dc3545; display: none;">停止自動掃描</button>
+                            <div id="autoScanStatus" style="margin-top: 10px; font-weight: bold; color: #666;">
+                                自動掃描狀態: <span id="scanStatusText">未啟動</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="autoScanConfigStatus" class="status"></div>
+                </div>
+            </div>
+
+            <!-- 郵件設定子頁面 -->
+            <div id="mail-settings" class="settings-sub-tab">
+                <div class="section">
+                    <h2>郵件通知設定</h2>
+                    <div class="form-group">
+                        <label>SMTP 伺服器:</label>
+                        <input type="text" id="smtpServer" placeholder="例如: smtp.gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>SMTP 連接埠:</label>
+                        <input type="number" id="smtpPort" value="587" min="1" max="65535" placeholder="預設: 587">
+                    </div>
+                    <div class="form-group">
+                        <label>使用者名稱(完整信箱地址):</label>
+                        <input type="text" id="smtpUsername" placeholder="SMTP 驗證使用者名稱">
+                    </div>
+                    <div class="form-group">
+                        <label>密碼:</label>
+                        <input type="password" id="smtpPassword" placeholder="SMTP 驗證密碼">
+                    </div>
+                    <div class="form-group">
+                        <label>收件者信箱:</label>
+                        <input type="email" id="mailTo" placeholder="例如: admin@example.com">
+                        <small style="color: #666; display: block; margin-top: 5px; font-size: 12px;">
+                            發送通知郵件的目標信箱
+                        </small>
+                    </div>
+                    <button onclick="updateMailConfig()">更新設定</button>
+                    <button onclick="loadMailConfig()">載入設定</button>
+                    <button onclick="testMailConfig()" style="background-color: #28a745;">測試連接</button>
+                    <div id="mailConfigStatus" class="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編輯IP/MAC對應的Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>編輯 IP/MAC 對應</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-form-group">
+                <label>IP位址:</label>
+                <input type="text" id="editIP" readonly style="background-color: #f5f5f5;">
+            </div>
+            <div class="modal-form-group">
+                <label>MAC位址:</label>
+                <input type="text" id="editMAC" placeholder="例如: 00:11:22:33:44:55">
+            </div>
+            <div class="modal-form-group">
+                <label>名稱:</label>
+                <input type="text" id="editName" placeholder="使用者名稱或設備名稱">
+            </div>
+            <div class="modal-form-group">
+                <label>說明:</label>
+                <input type="text" id="editDescription" placeholder="設備說明">
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeEditModal()">取消</button>
+                <button class="save-btn" onclick="saveEdit()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數儲存當前ARP記錄
+        let currentArpEntries = [];
+
+        // Tab 切換功能
+        function switchTab(tabName) {
+            // 隱藏所有 tab content
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 移除所有 tab button 的 active 狀態
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // 顯示選中的 tab content
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // 設定選中的 tab button 為 active
+            event.target.classList.add('active');
+
+            // 根據不同頁籤載入相應資料
+            if (tabName === 'records') {
+                loadScanBatches();
+                loadArpEntries();
+            } else if (tabName === 'maintenance') {
+                loadIPMacMappings();
+            } else if (tabName === 'settings') {
+                loadNetworkConfig();
+            }
+        }
+
+        // 顯示狀態訊息
+        function showStatus(elementId, message, isError = false, isPersistent = false) {
+            const element = document.getElementById(elementId);
+
+            // 清空現有內容
+            element.innerHTML = '';
+
+            // 創建訊息內容
+            const messageSpan = document.createElement('span');
+            messageSpan.textContent = message;
+            element.appendChild(messageSpan);
+
+            // 如果是持續顯示的訊息（如掃描結果），添加關閉按鈕
+            if (isPersistent) {
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '✕';
+                closeBtn.className = 'status-close-btn';
+                closeBtn.onclick = () => {
+                    element.style.display = 'none';
+                };
+                element.appendChild(closeBtn);
+            }
+
+            element.className = isError ? 'status error' : 'status success';
+            element.style.display = 'block';
+
+            // 如果不是持續顯示，按原邏輯自動隱藏
+            if (!isPersistent) {
+                // 根據訊息長度調整顯示時間，錯誤訊息顯示更久
+                const baseTime = isError ? 8000 : 3000;
+                const extraTime = Math.max(0, (message.length - 100) * 20);
+                const displayTime = baseTime + extraTime;
+
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, displayTime);
+            }
+        }
+
+        // 執行掃描
+        async function performScan() {
+            try {
+                // 顯示掃描中提示
+                showStatus('scanStatus', '正在掃描中，請稍候...', false);
+
+                const response = await fetch('/api/scan', { method: 'POST' });
+                const data = await response.json();
+
+                if (response.ok) {
+                    let message = data.message;
+                    if (data.config) {
+                        message += `\n使用設定：${data.config.scan_method} 方式`;
+                        message += `\n網路範圍：${data.config.network_cidr}`;
+                        if (data.note) {
+                            message += `\n注意：${data.note}`;
+                        }
+                    }
+
+                    // 檢查是否有不符合的項目
+                    if (data.mismatches && data.mismatches.length > 0) {
+                        message += `\n\n⚠️ 發現 ${data.mismatch_count} 筆MAC位址不符：`;
+                        data.mismatches.forEach(mismatch => {
+                            const nameInfo = mismatch.name ? ` (${mismatch.name})` : '';
+                            message += `\nIP: ${mismatch.ip}${nameInfo}`;
+                            message += `\n  掃描到: ${mismatch.scanned_mac}`;
+                            message += `\n  維護表: ${mismatch.maintained_mac}`;
+                        });
+                        showStatus('scanStatus', message, true, true); // 顯示為警告，持續顯示
+                    } else {
+                        showStatus('scanStatus', message, false, true); // 成功訊息，持續顯示
+                    }
+
+                    loadArpEntries(); // 重新載入ARP記錄
+                } else {
+                    showStatus('scanStatus', data.error || '掃描失敗', true, true);
+                }
+            } catch (error) {
+                showStatus('scanStatus', '掃描失敗: ' + error.message, true, true);
+            }
+        }
+
+        // 載入網路設定
+        async function loadNetworkConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const data = await response.json();
+                document.getElementById('networkCIDR').value = data.network_cidr || data.NetworkCIDR;
+
+                // 設定掃描方式
+                const scanMethod = data.scan_method || data.ScanMethod || 'arp-scan';
+                updateRadioSelection('scanMethod', scanMethod);
+
+                showStatus('configStatus', '設定已載入');
+            } catch (error) {
+                showStatus('configStatus', '載入設定失敗: ' + error.message, true);
+            }
+        }
+
+        // 更新網路設定
+        async function updateNetworkConfig() {
+            const networkCIDR = document.getElementById('networkCIDR').value;
+            const scanMethod = document.querySelector('input[name="scanMethod"]:checked').value;
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        network_cidr: networkCIDR,
+                        scan_method: scanMethod
+                    })
+                });
+                const data = await response.json();
+                showStatus('configStatus', data.message);
+            } catch (error) {
+                showStatus('configStatus', '更新設定失敗: ' + error.message, true);
+            }
+        }
+
+        // 載入掃描批次清單
+        async function loadScanBatches() {
+            try {
+                const response = await fetch('/api/scan-batches');
+                const batches = await response.json();
+                const batchSelect = document.getElementById('batchSelect');
+
+                // 清除現有選項，保留第一個"最新掃描"選項
+                batchSelect.innerHTML = '<option value="">最新掃描</option>';
+
+                batches.forEach(batch => {
+                    const option = document.createElement('option');
+                    option.value = batch.scan_batch;
+                    const date = new Date(batch.timestamp);
+                    option.textContent = `${batch.scan_batch} (${batch.count}筆) - ${date.toLocaleString()}`;
+                    batchSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('載入掃描批次失敗:', error);
+            }
+        }
+
+        // 從指定批次載入ARP記錄
+        async function loadArpEntriesFromBatch() {
+            const batchSelect = document.getElementById('batchSelect');
+            const selectedBatch = batchSelect.value;
+
+            // 顯示載入中提示
+            showStatus('recordsStatus', '正在載入記錄...', false);
+
+            let url = '/api/arp-entries';
+            if (selectedBatch) {
+                url += `?batch=${encodeURIComponent(selectedBatch)}`;
+            }
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                currentArpEntries = data; // 儲存到全域變數
+                const tbody = document.querySelector('#arpTable tbody');
+                tbody.innerHTML = '';
+
+                data.forEach(entry => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = entry.IP;
+
+                    // 顯示設備名稱
+                    const nameCell = row.insertCell(1);
+                    nameCell.textContent = entry.device_name || '-';
+                    if (entry.device_name) {
+                        nameCell.style.fontWeight = 'bold';
+                        nameCell.style.color = '#0066cc';
+                    }
+
+                    row.insertCell(2).textContent = entry.MAC;
+                    row.insertCell(3).textContent = new Date(entry.Timestamp).toLocaleString();
+
+                    const actionCell = row.insertCell(4);
+                    const addToMaintBtn = document.createElement('button');
+                    addToMaintBtn.textContent = '加入維護';
+                    addToMaintBtn.onclick = () => addToMaintenance(entry.IP, entry.MAC);
+                    actionCell.appendChild(addToMaintBtn);
+                });
+
+                // 顯示載入完成提示
+                showStatus('recordsStatus', `載入完成，共 ${data.length} 筆記錄`, false);
+
+            } catch (error) {
+                console.error('載入ARP記錄失敗:', error);
+                showStatus('recordsStatus', '載入記錄失敗', true);
+            }
+        }
+
+        // 載入ARP記錄 (向後兼容)
+        async function loadArpEntries() {
+            await loadArpEntriesFromBatch();
+        }
+
+        // 將掃描記錄加入IP/MAC維護
+        async function addToMaintenance(ip, mac) {
+            try {
+                // 先檢查IP是否已存在
+                const checkResponse = await fetch(`/api/check-ip/${encodeURIComponent(ip)}`);
+                const checkData = await checkResponse.json();
+
+                if (checkData.exists) {
+                    // IP已存在，詢問是否覆蓋
+                    const confirmMessage = `IP ${ip} 已存在於維護清單中：\n` +
+                                         `目前MAC: ${checkData.current_mac}\n` +
+                                         `目前說明: ${checkData.description || '無'}\n` +
+                                         `更新時間: ${new Date(checkData.updated_at).toLocaleString()}\n\n` +
+                                         `新的MAC: ${mac}\n\n` +
+                                         `是否要覆蓋現有記錄？`;
+
+                    if (!confirm(confirmMessage)) {
+                        return; // 使用者選擇不覆蓋
+                    }
+                }
+
+                // 準備請求數據，保留原有名稱和說明
+                let requestData = {
+                    ip: ip,
+                    mac: mac
+                };
+
+                // 如果IP已存在，保留原有的名稱和說明
+                if (checkData.exists) {
+                    requestData.name = checkData.name || '';
+                    requestData.description = checkData.description || '';
+                } else {
+                    // 新記錄設置預設說明
+                    requestData.name = '';
+                    requestData.description = '從掃描記錄加入';
+                }
+
+                // 執行新增或更新
+                const response = await fetch('/api/ip-mac-mappings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    const action = checkData.exists ? '已更新' : '已加入';
+                    alert(`IP ${ip} ${action}維護清單`);
+                } else {
+                    alert('操作失敗: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                alert('加入維護清單失敗: ' + error.message);
+            }
+        }
+
+        // 批量加入所有記錄到維護清單
+        async function addAllToMaintenance() {
+            if (currentArpEntries.length === 0) {
+                showStatus('recordsStatus', '沒有掃描記錄可以更新', true);
+                return;
+            }
+
+            const confirmMessage = `確定要將所有 ${currentArpEntries.length} 筆掃描記錄加入維護清單嗎？\n\n注意：\n- 已存在的IP會更新MAC地址\n- 原有的設備名稱和說明會保留\n- 新的IP會加入預設說明`;
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            let successCount = 0;
+            let failCount = 0;
+            let duplicateCount = 0;
+
+            showStatus('recordsStatus', '正在批量更新，請稍候...');
+
+            // 建立一個唯一IP的映射，避免重複的IP記錄
+            const uniqueEntries = new Map();
+            currentArpEntries.forEach(entry => {
+                // 使用最新的時間戳記錄
+                const existing = uniqueEntries.get(entry.IP);
+                if (!existing || new Date(entry.Timestamp) > new Date(existing.Timestamp)) {
+                    uniqueEntries.set(entry.IP, entry);
+                }
+            });
+
+            const entriesToProcess = Array.from(uniqueEntries.values());
+
+            // 批量處理記錄
+            for (const entry of entriesToProcess) {
+                try {
+                    // 檢查IP是否已存在，以保留原有名稱
+                    const checkResponse = await fetch(`/api/check-ip/${encodeURIComponent(entry.IP)}`);
+                    const checkData = await checkResponse.json();
+
+                    // 準備請求數據，保留原有名稱和說明
+                    let requestData = {
+                        ip: entry.IP,
+                        mac: entry.MAC
+                    };
+
+                    if (checkData.exists) {
+                        // 保留原有的名稱和說明
+                        requestData.name = checkData.name || '';
+                        requestData.description = checkData.description || '';
+                    } else {
+                        // 新記錄設置預設值
+                        requestData.name = '';
+                        requestData.description = '從掃描記錄批量加入';
+                    }
+
+                    const response = await fetch('/api/ip-mac-mappings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (error) {
+                    failCount++;
+                    console.error(`更新 ${entry.IP} 失敗:`, error);
+                }
+            }
+
+            // 顯示結果
+            let message = `批量更新完成！\n`;
+            message += `成功: ${successCount} 筆\n`;
+            if (failCount > 0) {
+                message += `失敗: ${failCount} 筆\n`;
+            }
+            if (currentArpEntries.length !== entriesToProcess.length) {
+                duplicateCount = currentArpEntries.length - entriesToProcess.length;
+                message += `去重複: ${duplicateCount} 筆`;
+            }
+
+            if (failCount > 0) {
+                showStatus('recordsStatus', message, true);
+            } else {
+                showStatus('recordsStatus', message);
+            }
+
+            // 自動重新整理維護清單（如果在維護頁籤）
+            const maintenanceTab = document.getElementById('maintenance-tab');
+            if (maintenanceTab && maintenanceTab.classList.contains('active')) {
+                loadIPMacMappings();
+            }
+        }
+
+        // 載入IP/MAC對應
+        async function loadIPMacMappings() {
+            try {
+                const sortBy = document.getElementById('sortOrder').value;
+                const url = `/api/ip-mac-mappings?sort=${encodeURIComponent(sortBy)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                const tbody = document.querySelector('#mappingTable tbody');
+                tbody.innerHTML = '';
+
+                data.forEach(mapping => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).textContent = mapping.IP;
+                    row.insertCell(1).textContent = mapping.MAC;
+                    row.insertCell(2).textContent = mapping.Name || '';
+                    row.insertCell(3).textContent = mapping.Description || '';
+                    row.insertCell(4).textContent = new Date(mapping.UpdatedAt).toLocaleString();
+
+                    const actionCell = row.insertCell(5);
+                    const editBtn = document.createElement('button');
+                    editBtn.textContent = '編輯';
+                    editBtn.className = 'primary';
+                    editBtn.style.marginRight = '5px';
+                    editBtn.onclick = () => openEditModal(mapping);
+                    actionCell.appendChild(editBtn);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = '刪除';
+                    deleteBtn.className = 'danger';
+                    deleteBtn.onclick = () => deleteIPMacMapping(mapping.ID);
+                    actionCell.appendChild(deleteBtn);
+                });
+            } catch (error) {
+                console.error('載入IP/MAC對應失敗:', error);
+            }
+        }
+
+        // 刪除IP/MAC對應
+        async function deleteIPMacMapping(id) {
+            if (!confirm('確定要刪除這個對應嗎？')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/ip-mac-mappings/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                showStatus('maintenanceStatus', data.message);
+                loadIPMacMappings(); // 重新載入列表
+            } catch (error) {
+                showStatus('maintenanceStatus', '刪除失敗: ' + error.message, true);
+            }
+        }
+
+        // 全部清除IP/MAC對應
+        async function clearAllIPMacMappings() {
+            const confirmMessage = '確定要清除所有 IP/MAC 對應記錄嗎？\n\n此操作無法復原！';
+
+            if (!confirm(confirmMessage)) {
+                return; // 使用者取消操作
+            }
+
+            try {
+                showStatus('maintenanceStatus', '正在清除所有記錄...', false);
+
+                const response = await fetch('/api/ip-mac-mappings/clear-all', {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showStatus('maintenanceStatus', `清除完成：${data.deleted_count} 筆記錄已刪除`, false);
+                    // 重新載入列表
+                    loadIPMacMappings();
+                } else {
+                    const errorData = await response.json();
+                    showStatus('maintenanceStatus', errorData.error || '清除失敗', true);
+                }
+            } catch (error) {
+                console.error('清除失敗:', error);
+                showStatus('maintenanceStatus', '清除操作失敗', true);
+            }
+        }
+
+        // 全域變數儲存編輯中的記錄
+        let editingMapping = null;
+
+        // 打開編輯Modal
+        function openEditModal(mapping) {
+            editingMapping = mapping;
+
+            // 填入現有資料
+            document.getElementById('editIP').value = mapping.IP;
+            document.getElementById('editMAC').value = mapping.MAC;
+            document.getElementById('editName').value = mapping.Name || '';
+            document.getElementById('editDescription').value = mapping.Description || '';
+
+            // 顯示Modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // 關閉編輯Modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            editingMapping = null;
+        }
+
+        // 儲存編輯
+        async function saveEdit() {
+            if (!editingMapping) {
+                return;
+            }
+
+            const mac = document.getElementById('editMAC').value;
+            const name = document.getElementById('editName').value;
+            const description = document.getElementById('editDescription').value;
+
+            if (!mac) {
+                alert('MAC位址不能為空');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/ip-mac-mappings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ip: editingMapping.IP,
+                        mac: mac,
+                        name: name,
+                        description: description
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showStatus('maintenanceStatus', '編輯成功', false);
+                    closeEditModal();
+                    loadIPMacMappings(); // 重新載入列表
+                } else {
+                    const errorData = await response.json();
+                    alert('編輯失敗: ' + (errorData.error || '未知錯誤'));
+                }
+            } catch (error) {
+                alert('編輯失敗: ' + error.message);
+            }
+        }
+
+        // 點擊Modal外部關閉
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        // 系統設定子分頁切換
+        function switchSettingsTab(tabName) {
+            // 隱藏所有子分頁
+            const subTabs = document.querySelectorAll('.settings-sub-tab');
+            subTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 移除所有子分頁按鈕的 active 狀態
+            const subTabButtons = document.querySelectorAll('#settings-tab .tab-button');
+            subTabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // 顯示選中的子分頁
+            const selectedTab = document.getElementById(tabName + '-settings');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // 設定選中的按鈕為 active
+            event.target.classList.add('active');
+
+            // 根據不同子分頁載入相應資料
+            if (tabName === 'network') {
+                loadNetworkConfig();
+            } else if (tabName === 'auto-scan') {
+                loadAutoScanConfig();
+            } else if (tabName === 'mail') {
+                loadMailConfig();
+            }
+        }
+
+        // 處理自動掃描模式切換
+        function handleAutoScanModeChange() {
+            const autoScanIntervalGroup = document.getElementById('autoScanIntervalGroup');
+            const autoMode = document.getElementById('autoMode');
+
+            if (autoMode.checked) {
+                autoScanIntervalGroup.style.display = 'block';
+            } else {
+                autoScanIntervalGroup.style.display = 'none';
+            }
+        }
+
+        // 載入自動掃描設定
+        async function loadAutoScanConfig() {
+            try {
+                const response = await fetch('/api/auto-scan-config');
+                const data = await response.json();
+
+                // 設定掃描模式
+                const scanMode = data.auto_scan_enabled ? 'auto' : 'manual';
+                updateRadioSelection('autoScanMode', scanMode);
+
+                if (data.auto_scan_enabled) {
+                    document.getElementById('autoScanInterval').value = data.auto_scan_interval || 6;
+                    document.getElementById('autoScanIntervalGroup').style.display = 'block';
+                } else {
+                    document.getElementById('autoScanIntervalGroup').style.display = 'none';
+                }
+
+                showStatus('autoScanConfigStatus', '自動掃描設定已載入');
+            } catch (error) {
+                showStatus('autoScanConfigStatus', '載入自動掃描設定失敗: ' + error.message, true);
+            }
+        }
+
+        // 更新自動掃描設定
+        async function updateAutoScanConfig() {
+            const autoScanEnabled = document.getElementById('autoMode').checked;
+            const autoScanInterval = parseInt(document.getElementById('autoScanInterval').value) || 6;
+
+            // 驗證間隔時間
+            if (autoScanEnabled && (autoScanInterval < 1 || autoScanInterval > 1440)) {
+                showStatus('autoScanConfigStatus', '掃描間隔必須在 1-1440 分鐘之間', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auto-scan-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        auto_scan_enabled: autoScanEnabled,
+                        auto_scan_interval: autoScanInterval
+                    })
+                });
+                const data = await response.json();
+                showStatus('autoScanConfigStatus', data.message);
+            } catch (error) {
+                showStatus('autoScanConfigStatus', '更新自動掃描設定失敗: ' + error.message, true);
+            }
+        }
+
+        // 載入郵件設定
+        async function loadMailConfig() {
+            try {
+                const response = await fetch('/api/mail-config');
+                const data = await response.json();
+
+                document.getElementById('smtpServer').value = data.smtp_server || '';
+                document.getElementById('smtpPort').value = data.smtp_port || 587;
+                document.getElementById('smtpUsername').value = data.smtp_username || '';
+                document.getElementById('smtpPassword').value = data.smtp_password || '';
+                document.getElementById('mailTo').value = data.mail_to || '';
+
+                showStatus('mailConfigStatus', '郵件設定已載入');
+            } catch (error) {
+                showStatus('mailConfigStatus', '載入郵件設定失敗: ' + error.message, true);
+            }
+        }
+
+        // 更新郵件設定
+        async function updateMailConfig() {
+            const smtpServer = document.getElementById('smtpServer').value;
+            const smtpPort = parseInt(document.getElementById('smtpPort').value) || 587;
+            const smtpUsername = document.getElementById('smtpUsername').value;
+            const smtpPassword = document.getElementById('smtpPassword').value;
+            const mailTo = document.getElementById('mailTo').value;
+
+            // 基本驗證
+            if (smtpServer && (!smtpUsername || !smtpPassword || !mailTo)) {
+                showStatus('mailConfigStatus', '如果設定 SMTP 伺服器，則使用者名稱、密碼和收件者都必須填寫', true);
+                return;
+            }
+
+            // 驗證連接埠範圍
+            if (smtpPort < 1 || smtpPort > 65535) {
+                showStatus('mailConfigStatus', 'SMTP 連接埠必須在 1-65535 之間', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/mail-config', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        smtp_server: smtpServer,
+                        smtp_port: smtpPort,
+                        smtp_username: smtpUsername,
+                        smtp_password: smtpPassword,
+                        mail_to: mailTo
+                    })
+                });
+                const data = await response.json();
+                showStatus('mailConfigStatus', data.message);
+            } catch (error) {
+                showStatus('mailConfigStatus', '更新郵件設定失敗: ' + error.message, true);
+            }
+        }
+
+        // 測試郵件連接
+        async function testMailConfig() {
+            const smtpServer = document.getElementById('smtpServer').value;
+            const smtpPort = parseInt(document.getElementById('smtpPort').value) || 587;
+            const smtpUsername = document.getElementById('smtpUsername').value;
+            const smtpPassword = document.getElementById('smtpPassword').value;
+            const mailTo = document.getElementById('mailTo').value;
+
+            // 驗證必要欄位
+            if (!smtpServer || !smtpUsername || !smtpPassword || !mailTo) {
+                showStatus('mailConfigStatus', '請先填寫完整的郵件設定', true);
+                return;
+            }
+
+            showStatus('mailConfigStatus', '正在測試郵件連接...', false);
+
+            try {
+                const response = await fetch('/api/test-mail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        smtp_server: smtpServer,
+                        smtp_port: smtpPort,
+                        smtp_username: smtpUsername,
+                        smtp_password: smtpPassword,
+                        mail_to: mailTo
+                    })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus('mailConfigStatus', data.message, false);
+                } else {
+                    showStatus('mailConfigStatus', data.error || '測試失敗', true);
+                }
+            } catch (error) {
+                showStatus('mailConfigStatus', '測試郵件連接失敗: ' + error.message, true);
+            }
+        }
+
+        // 開始自動掃描
+        async function startAutoScan() {
+            // 檢查自動掃描是否已啟用
+            const autoModeEnabled = document.getElementById('autoMode').checked;
+            if (!autoModeEnabled) {
+                showStatus('autoScanConfigStatus', '請先啟用自動掃描模式', true);
+                return;
+            }
+
+            try {
+                showStatus('autoScanConfigStatus', '正在啟動自動掃描...', false);
+
+                const response = await fetch('/api/auto-scan-control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'start'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus('autoScanConfigStatus', data.message, false);
+                    updateAutoScanUI(true);
+                } else {
+                    showStatus('autoScanConfigStatus', data.error || '啟動失敗', true);
+                }
+            } catch (error) {
+                showStatus('autoScanConfigStatus', '啟動自動掃描失敗: ' + error.message, true);
+            }
+        }
+
+        // 停止自動掃描
+        async function stopAutoScan() {
+            try {
+                showStatus('autoScanConfigStatus', '正在停止自動掃描...', false);
+
+                const response = await fetch('/api/auto-scan-control', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'stop'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus('autoScanConfigStatus', data.message, false);
+                    updateAutoScanUI(false);
+                } else {
+                    showStatus('autoScanConfigStatus', data.error || '停止失敗', true);
+                }
+            } catch (error) {
+                showStatus('autoScanConfigStatus', '停止自動掃描失敗: ' + error.message, true);
+            }
+        }
+
+        // 更新自動掃描UI狀態
+        function updateAutoScanUI(isRunning) {
+            const startBtn = document.getElementById('startAutoScanBtn');
+            const stopBtn = document.getElementById('stopAutoScanBtn');
+            const statusText = document.getElementById('scanStatusText');
+
+            if (isRunning) {
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                statusText.textContent = '運行中';
+                statusText.style.color = '#28a745';
+            } else {
+                startBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'none';
+                statusText.textContent = '未啟動';
+                statusText.style.color = '#666';
+            }
+        }
+
+        // 載入自動掃描狀態
+        async function loadAutoScanStatus() {
+            try {
+                const response = await fetch('/api/auto-scan-status');
+                const data = await response.json();
+                updateAutoScanUI(data.is_running);
+            } catch (error) {
+                console.error('載入自動掃描狀態失敗:', error);
+            }
+        }
+
+        // 輔助函數：更新radio button選擇狀態
+        function updateRadioSelection(groupName, value) {
+            const radios = document.querySelectorAll(`input[name="${groupName}"]`);
+            radios.forEach(radio => {
+                radio.checked = (radio.value === value);
+                const option = radio.closest('.radio-option');
+                if (option) {
+                    updateRadioOptionState(option, radio.checked);
+                }
+            });
+        }
+
+        // 更新radio選項的視覺狀態
+        function updateRadioOptionState(option, isSelected) {
+            if (isSelected) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+        }
+
+        // 頁面載入時初始化
+        window.onload = function() {
+            // 初始化radio button選項的視覺效果
+            const radioOptions = document.querySelectorAll('.radio-option');
+
+            radioOptions.forEach(option => {
+                const radio = option.querySelector('input[type="radio"]');
+
+                // 初始化選中狀態
+                updateRadioOptionState(option, radio.checked);
+
+                // 監聽變化
+                radio.addEventListener('change', function() {
+                    // 清除同組其他選項的選中狀態
+                    const groupName = this.name;
+                    document.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+                        const parentOption = r.closest('.radio-option');
+                        if (parentOption) {
+                            updateRadioOptionState(parentOption, r.checked);
+                        }
+                    });
+
+                    // 處理自動掃描模式切換的特殊邏輯
+                    if (groupName === 'autoScanMode') {
+                        handleAutoScanModeChange();
+                    }
+                });
+
+                // 點擊整個選項區域時選中
+                option.addEventListener('click', function(e) {
+                    if (e.target.type !== 'radio') {
+                        radio.click();
+                    }
+                });
+            });
+            
+            // 初始化自動掃描間隔組的顯示狀態
+            handleAutoScanModeChange();
+            
+            // 載入自動掃描狀態
+            loadAutoScanStatus();
+        };
+    </script>
+</body>
+</html>
