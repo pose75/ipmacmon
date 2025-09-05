@@ -9,7 +9,16 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/microcosm-cc/bluemonday"
 )
+
+// 全域策略變數
+var strictPolicy = bluemonday.StrictPolicy()
+
+// 清理文字輸入，移除所有 HTML 標籤
+func sanitizeText(input string) string {
+	return strictPolicy.Sanitize(input)
+}
 
 // 首頁
 func indexHandler(c *fiber.Ctx) error {
@@ -280,6 +289,10 @@ func updateIPMacMappingHandler(c *fiber.Ctx) error {
 	
 	// 標準化 MAC 地址格式
 	req.MAC = normalizeMAC(req.MAC)
+	
+	// 清理文字輸入防止 XSS
+	req.Name = sanitizeText(req.Name)
+	req.Description = sanitizeText(req.Description)
 
 	var mapping IPMacMapping
 	result := db.Where("ip = ?", req.IP).First(&mapping)
